@@ -1,11 +1,13 @@
 import { connect } from 'react-redux'
 
-export default connect(state => state.position)(({ x, y }) => {
+export default connect(state => state)(({ points }) => {
   return (
     <div>
-      <div style={{ left: x, top: y, ...styles.box }}>
+      {points.map(({ id, x, y }) =>
+        <div key={`Point_${id}`} style={{ left: x, top: y, ...styles.box }}>
 
-      </div>
+        </div>
+      )}
     </div>
   )
 })
