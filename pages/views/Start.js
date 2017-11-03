@@ -3,6 +3,21 @@ import withDragDropContext from '../dndContext'
 import { DropTarget } from 'react-dnd'
 import Points from './Points'
 
+function limit(fn, delay) {
+  let timer = null
+  return function () {
+    const context = this
+    const args = arguments
+    if (!timer) {
+      timer = setTimeout(() => {
+        fn.apply(context, args)
+        clearTimeout(timer)
+        timer = null
+      }, delay)
+    }
+  }
+}
+
 const pointTarget = {
   drop: (props, monitor, component) => {
     const item = monitor.getItem()
@@ -10,7 +25,15 @@ const pointTarget = {
 		const x = Math.round(item.x + delta.x)
 		const y = Math.round(item.y + delta.y)
 
-		component.movePoint(item, x, y)
+		component.drop(item, x, y)
+  },
+  hover: (props, monitor, component) => {
+    const item = monitor.getItem()
+    const delta = monitor.getDifferenceFromInitialOffset()
+		const x = Math.round(item.x + delta.x)
+		const y = Math.round(item.y + delta.y)
+
+    component.movePoint(item, x, y)
   }
 }
 
@@ -19,10 +42,18 @@ const pointConnect = connect => ({
 })
 
 class Start extends React.Component {
+  constructor (props) {
+    super(props)
+    this.move = limit(props.move, 50)
+  }
+
   movePoint(item, x, y) {
+    this.move({ id: item.id, x, y })
+  }
+
+  drop(item, x, y) {
     const { move } = this.props
     move({ id: item.id, x, y })
-    console.log('movePoint', item, x, y)
   }
 
   render() {
