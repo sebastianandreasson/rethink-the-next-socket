@@ -36,8 +36,8 @@ export const reducer = (state = initialState, action) => {
 }
 
 // ACTIONS
-export const move = position => dispatch => {
-  return dispatch({ type: actionTypes.MOVE, data: position })
+export const move = point => dispatch => {
+  socket.emit('update', point)
 }
 
 export const get = () => dispatch => {

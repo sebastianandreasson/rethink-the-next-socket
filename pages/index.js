@@ -13,9 +13,10 @@ class Index extends React.Component {
   }
 
   render () {
+    const { move } = this.props
     return (
       <div>
-        <Start />
+        <Start move={move} />
       </div>
     )
   }
